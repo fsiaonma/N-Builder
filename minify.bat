@@ -1,6 +1,6 @@
 @echo off
 
-node ./min.js
+node ./nb.js
 
 echo "build success!!"
 

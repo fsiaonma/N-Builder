@@ -1,8 +1,8 @@
 var fs  = require('fs'); 
 var util = require("util");
-var jsp = require("./uglify-js").parser;
-var pro = require("./uglify-js").uglify;
 var config = require('./config.js');
+var jsp = require("./libs/uglify-js").parser;
+var pro = require("./libs/uglify-js").uglify;
 
 // 批量读取文件，压缩之
 function compressionFiles(fileIn, fileOut) {
@@ -10,7 +10,7 @@ function compressionFiles(fileIn, fileOut) {
         var finalCode = [];
         var origCode = "";
         var ast = "";
-        for (var i = 0,len = fileIn.length; i < len; i++) {
+        for (var i = 0, len = fileIn.length; i < len; ++i) {
             origCode = fs.readFileSync(fileIn[i], 'utf8');
             ast = jsp.parse(origCode); 
             ast = pro.ast_mangle(ast); 

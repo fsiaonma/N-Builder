@@ -3,11 +3,11 @@ var config = config || {};
 (function (c) {
     var configs = [{
         args: {
-            packPath: "./test/",
-            packName: "min.js",
+            packPath: "",
+            packName: ""
         },
-        copy: ["./config.js", "./minify.bat"],
-        compression: ["./config.js"]
+        copy: [],
+        compression: []
     }];
 
     c.getConfigs = function () {
