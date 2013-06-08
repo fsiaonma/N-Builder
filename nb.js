@@ -35,8 +35,7 @@ function copyFiles(fileIn, fileOutPath) {
 }
 
 (function() {
-    var c = config.getConfigs();
-    c.map(function(item) {
+    config.map(function(item) {
         var packPath = item.args.packPath;
         var packName = item.args.packName;
         console.log(item.compression, packPath + packName);

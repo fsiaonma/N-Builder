@@ -1,18 +1,16 @@
-var config = config || {};
-
-(function (c) {
-    var configs = [{
+var config = config || {
+    CleanCss: true,
+    CompreeJs: true,
+    MinPng: true,
+    xml2js: false,
+    items: [{
         args: {
             packPath: "",
             packName: ""
         },
         copy: [],
         compression: []
-    }];
-
-    c.getConfigs = function () {
-        return configs;
-    }
-})(config);
+    }]
+}
 
 module.exports = config;
