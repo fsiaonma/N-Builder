@@ -3,6 +3,8 @@ var util = require("util");
 var config = require('./config.js');
 var jsp = require("./libs/uglify-js").parser;
 var pro = require("./libs/uglify-js").uglify;
+var smushit = require('./libs/node-smushit/smushit.js');
+var walk = require('./libs/walk');
 
 // 批量读取文件，压缩之
 function compressionFiles(fileIn, fileOut) {
@@ -34,12 +36,31 @@ function copyFiles(fileIn, fileOutPath) {
     })
 }
 
+// 批量压缩图片
+function compressImages(paths) {
+    paths.map(function(imagesPath) {
+        (function (path) {
+            var callFunc = arguments.callee;
+            var self = this;
+            if (path[path.length - 1] == '/') {
+                var walker = walk.walk(path);
+                walker.on("file", function (root, fileStats, next) {
+                    console.log(root + '/' + fileStats.name);
+                    callFunc.call(self, root + '/' + fileStats.name);
+                    next();
+                });
+            } else {
+                var suffix = path.substr(path.lastIndexOf('.') + 1, path.length - 1);
+                if (suffix == "png" || suffix == "jpg") {
+                    smushit.smushit(path);
+                }
+            }  
+        })(imagesPath);
+    });
+}
+
 (function() {
-    config.map(function(item) {
-        var packPath = item.args.packPath;
-        var packName = item.args.packName;
-        console.log(item.compression, packPath + packName);
-        compressionFiles(item.compression, packPath + packName);
-        copyFiles(item.copy, packPath);
+    config.items.map(function(item) {
+        config.MinPng? compressImages(item.images) : '';
     });
 })();

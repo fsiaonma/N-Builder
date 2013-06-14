@@ -1,16 +1,16 @@
 var findit = require('../../libs/node-findit/index.js');
 
-var finder = findit.find('./test', function (file) {
+var finder = findit.find('./test/', function (file) {
 	console.log(file);
 });
 
-var files = findit.findSync('./test/');
-console.dir(files);
+// var files = findit.findSync('./test/');
+// console.dir(files);
 
-finder.on('directory', function (dir) {
+finder.on('directory', function (dir, stat) {
     console.log(dir + '/');
 });
 
 finder.on('file', function (file) {
-    console.log(file);
+    // console.log(file);
 });

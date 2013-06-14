@@ -1,7 +1,7 @@
 var fs = require('fs');
 var path = require('path');
 var EventEmitter = require('events').EventEmitter;
-var Seq = require('seq');
+var Seq = require('../node-seq/index.js');
 
 function createInodeChecker() {
     var inodes = {};

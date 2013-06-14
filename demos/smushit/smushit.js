@@ -1,7 +1,7 @@
 var smushit = require('../../libs/node-smushit/smushit.js');
 
 //smash a single file
-smushit.smushit('img/a.png');
+smushit.smushit('img/fondo2.jpg');
 
 // //smash files
 // smushit.smushit(['file1', 'fiel2', ..]);
