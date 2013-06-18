@@ -1,10 +1,10 @@
-var fs  = require('fs'); 
-var util = require("util");
+var fs  = require('./modules/fs'); 
+var util = require("./modules/util");
 
-var jsp = require("./libs/uglify-js").parser;
-var pro = require("./libs/uglify-js").uglify;
-var smushit = require('./libs/node-smushit/smushit');
-var walk = require('./libs/walk');
+var jsp = require("./modules/uglify-js").parser;
+var pro = require("./modules/uglify-js").uglify;
+var smushit = require('./modules/smushit/smushit');
+var walk = require('./modules/walk');
 
 var config = require('./config');
 
@@ -38,6 +38,7 @@ function compressionFiles(fileIn, fileOut) {
     }
 }
 
+// 创建文件夹
 function createFloder(buildPath, path) {
     var arr = path.split('/');
     arr.map(function(item) {
