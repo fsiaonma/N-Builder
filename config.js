@@ -1,15 +1,15 @@
 var config = config || [{
-    buildPath: './gogo',
+    buildPath: './gogo/',
     images: {
-        path: ['./img/']
+        path: ['img/']
     },
     js: {
-        jsEnergy: ['./js/'],
-        copyOnly: ['./js/'],
-        ignore: ['./js/systems/']
+        jsEnergy: ['js/'],
+        copyOnly: ['js/systems/'],
+        ignore: ['js/components/']
     },
     css: {
-        compression: [''],
+        cssEnergy: [''],
         copyOnly: [''],
         ignore: ['']
     }

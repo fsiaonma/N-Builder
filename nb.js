@@ -8,7 +8,7 @@ var walk = require('./libs/walk');
 
 var config = require('./config');
 
-// copy file
+// 复制文件
 function copyFile(fileIn, fileOutPath) {
     var is = fs.createReadStream(fileIn);
     console.log("copy to: " + fileOutPath + '/' + fileIn);
@@ -36,6 +36,19 @@ function compressionFiles(fileIn, fileOut) {
         };
         fs.writeFileSync(fileOut, finalCode.join(''), 'utf8');
     }
+}
+
+function createFloder(buildPath, path) {
+    var arr = path.split('/');
+    arr.map(function(item) {
+        if (item) {
+            fs.readdir(buildPath + item, function(err, files) {
+                err? fs.mkdir(buildPath + item) : '';
+                buildPath = buildPath + item + '/';
+            })
+        }
+    });
+    
 }
 
 // 打包 JS 文件
@@ -88,16 +101,12 @@ function unpackJs(buildPath, jsConfig) {
                 var callFunc = arguments.callee;
                 var self = this;
                 if (path[path.length - 1] == '/') {
+                    createFloder(buildPath, path);
                     ++copyWalking;
-                    fs.readdir(buildPath + '/' + path, function(err, files) {
-                        err? fs.mkdir(buildPath + '/' + path) : '';
-                    })
                     var walker = walk.walk(path.substr(0, path.lastIndexOf('/')));
                     walker.on("directories", function (root, dirStatsArray, next) {
                         dirStatsArray.map(function(item) {
-                            fs.readdir(buildPath + '/' + root + '/' + item.name, function(err, files) {
-                                err? fs.mkdir(buildPath + '/' + root + '/' + item.name) : '';
-                            })
+                            createFloder(buildPath, root + '/' + item.name);
                         })
                         next();
                     });
@@ -186,15 +195,11 @@ function unpackImages(buildPath, imagesConfig) {
             var callFunc = arguments.callee;
             var self = this;
             if (path[path.length - 1] == '/') {
-                fs.readdir(buildPath + '/' + path, function(err, files) {
-                    err? fs.mkdir(buildPath + '/' + path) : '';
-                })
+                createFloder(buildPath, path);
                 var walker = walk.walk(path.substr(0, path.lastIndexOf('/')));
                 walker.on("directories", function (root, dirStatsArray, next) {
                     dirStatsArray.map(function(item) {
-                        fs.readdir(buildPath + '/' + root + '/' + item.name, function(err, files) {
-                            err? fs.mkdir(buildPath + '/' + root + '/' + item.name) : '';
-                        })
+                        createFloder(buildPath, root + '/' + item.name);
                     })
                     next();
                 });
