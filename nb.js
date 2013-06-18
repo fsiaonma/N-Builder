@@ -1,10 +1,24 @@
 var fs  = require('fs'); 
 var util = require("util");
-var config = require('./config.js');
+
 var jsp = require("./libs/uglify-js").parser;
 var pro = require("./libs/uglify-js").uglify;
-var smushit = require('./libs/node-smushit/smushit.js');
+var smushit = require('./libs/node-smushit/smushit');
 var walk = require('./libs/walk');
+
+var config = require('./config');
+
+// copy file
+function copyFile(fileIn, fileOutPath) {
+    var is = fs.createReadStream(fileIn);
+    console.log("copy to: " + fileOutPath + '/' + fileIn);
+    var os = fs.createWriteStream(fileOutPath + '/' + fileIn);
+    util.pump(is, os, function(err){
+        if(err) {
+            console.log("copy err: " + err);
+        }
+    });
+}
 
 // 批量读取文件，压缩之
 function compressionFiles(fileIn, fileOut) {
@@ -13,46 +27,190 @@ function compressionFiles(fileIn, fileOut) {
         var origCode = "";
         var ast = "";
         for (var i = 0, len = fileIn.length; i < len; ++i) {
+            console.log("compressing " + fileIn[i]);
             origCode = fs.readFileSync(fileIn[i], 'utf8');
             ast = jsp.parse(origCode); 
             ast = pro.ast_mangle(ast); 
             ast = pro.ast_squeeze(ast);
             finalCode.push(pro.gen_code(ast), ';');
         };
+        fs.writeFileSync(fileOut, finalCode.join(''), 'utf8');
     }
-    fs.writeFileSync(fileOut, finalCode.join(''), 'utf8');
 }
 
-// 批量复制文件
-function copyFiles(fileIn, fileOutPath) {
-    fileIn.map(function (item) {
-        var is = fs.createReadStream(item);
-        var os = fs.createWriteStream(fileOutPath + item);
-        util.pump(is, os, function(err){
-            if(err) {
-                console.log("copy err: " + err);
-            }
+// 打包 JS 文件
+function unpackJs(buildPath, jsConfig) {
+    var ignorePath = [];
+    var copyFilesPath = [];
+    var compressionFilesPath = [];
+
+    function walkForIgnore() {
+        var ignoreWalking = 0;
+
+        jsConfig.ignore.map(function(ingorePath) {
+            (function(path) {
+                var callFunc = arguments.callee;
+                var self = this;
+                if (path[path.length - 1] == '/') {
+                    ++ignoreWalking;
+                    var walker = walk.walk(path.substr(0, path.lastIndexOf('/')));
+                    walker.on("file", function (root, fileStats, next) {
+                        var filePathName = (root[root.length - 1] == '/') ? root + fileStats.name : root + '/' + fileStats.name
+                        callFunc.call(self, filePathName);
+                        next();
+                    });
+                    walker.on("end", function() {
+                        if (--ignoreWalking == 0) {
+                            walkForCopy();
+                        }
+                    });
+                } else {
+                    var suffix = path.substr(path.lastIndexOf('.') + 1, path.length - 1);
+                    if (suffix == "js") {
+                        ignorePath.push(path);
+                    }
+                }
+            })(ingorePath);
         });
-    })
+
+        if (ignoreWalking == 0) {
+            walkForCopy();
+        }
+    }
+
+    walkForIgnore();
+
+    function walkForCopy() {
+        var copyWalking = 0;
+
+        jsConfig.copyOnly.map(function(copyFilePath) {
+            (function(path) {
+                var callFunc = arguments.callee;
+                var self = this;
+                if (path[path.length - 1] == '/') {
+                    ++copyWalking;
+                    fs.readdir(buildPath + '/' + path, function(err, files) {
+                        err? fs.mkdir(buildPath + '/' + path) : '';
+                    })
+                    var walker = walk.walk(path.substr(0, path.lastIndexOf('/')));
+                    walker.on("directories", function (root, dirStatsArray, next) {
+                        dirStatsArray.map(function(item) {
+                            fs.readdir(buildPath + '/' + root + '/' + item.name, function(err, files) {
+                                err? fs.mkdir(buildPath + '/' + root + '/' + item.name) : '';
+                            })
+                        })
+                        next();
+                    });
+                    walker.on("file", function (root, fileStats, next) {
+                        var filePathName = (root[root.length - 1] == '/') ? root + fileStats.name : root + '/' + fileStats.name
+                        callFunc.call(self, filePathName);
+                        next();
+                    });
+                    walker.on("end", function() {
+                        if (--copyWalking == 0) {
+                            walkForCompression();
+                        }
+                    });
+                } else {
+                    for (var i = 0, len = ignorePath.length; i < len; ++i) {
+                        if (ignorePath[i] == path) {
+                            return ;
+                        }
+                    }
+
+                    var suffix = path.substr(path.lastIndexOf('.') + 1, path.length - 1);
+                    if (suffix == "js") {
+                        copyFilesPath.push(path);
+                        copyFile(path, buildPath);
+                    }
+                }
+            })(copyFilePath);
+        });
+        
+        if (copyWalking == 0) {
+            walkForCompression();
+        }
+    }
+
+    function walkForCompression() {
+        var compressWalking = 0;
+
+        jsConfig.jsEnergy.map(function(jsEnergyPath) {
+            (function(path) {
+                var callFunc = arguments.callee;
+                var self = this;
+                if (path[path.length - 1] == '/') {
+                    ++compressWalking;
+                    var walker = walk.walk(path.substr(0, path.lastIndexOf('/')));
+                    walker.on("file", function (root, fileStats, next) {
+                        var filePathName = (root[root.length - 1] == '/') ? root + fileStats.name : root + '/' + fileStats.name
+                        callFunc.call(self, filePathName);
+                        next();
+                    });
+                    walker.on("end", function() {
+                        if (--compressWalking == 0) {
+                            compressionFiles(compressionFilesPath, buildPath + '/min.js');
+                        }
+                    });
+                } else {
+                    for (var i = 0, len = copyFilesPath.length; i < len; ++i) {
+                        if (copyFilesPath[i] == path) {
+                            return ;
+                        }
+                    }
+
+                    for (var i = 0, len = ignorePath.length; i < len; ++i) {
+                        if (ignorePath[i] == path) {
+                            return ;
+                        }
+                    }
+                        
+                    var suffix = path.substr(path.lastIndexOf('.') + 1, path.length - 1);
+                    if (suffix == "js") {
+                        compressionFilesPath.push(path);
+                    }
+                }
+            })(jsEnergyPath);
+        });
+
+        if (compressWalking == 0) {
+            compressionFiles(compressionFilesPath, buildPath + '/min.js');
+        }
+    }   
 }
 
-// 批量压缩图片
-function compressImages(paths) {
-    paths.map(function(imagesPath) {
-        (function (path) {
+// 打包图片
+function unpackImages(buildPath, imagesConfig) {
+    imagesConfig.path.map(function(imagesPath) {
+        (function(path) {
             var callFunc = arguments.callee;
             var self = this;
             if (path[path.length - 1] == '/') {
-                var walker = walk.walk(path);
+                fs.readdir(buildPath + '/' + path, function(err, files) {
+                    err? fs.mkdir(buildPath + '/' + path) : '';
+                })
+                var walker = walk.walk(path.substr(0, path.lastIndexOf('/')));
+                walker.on("directories", function (root, dirStatsArray, next) {
+                    dirStatsArray.map(function(item) {
+                        fs.readdir(buildPath + '/' + root + '/' + item.name, function(err, files) {
+                            err? fs.mkdir(buildPath + '/' + root + '/' + item.name) : '';
+                        })
+                    })
+                    next();
+                });
                 walker.on("file", function (root, fileStats, next) {
-                    console.log(root + '/' + fileStats.name);
-                    callFunc.call(self, root + '/' + fileStats.name);
+                    var filePathName = (root[root.length - 1] == '/') ? root + fileStats.name : root + '/' + fileStats.name
+                    callFunc.call(self, filePathName);
                     next();
                 });
             } else {
                 var suffix = path.substr(path.lastIndexOf('.') + 1, path.length - 1);
                 if (suffix == "png" || suffix == "jpg") {
-                    smushit.smushit(path);
+                    smushit.smushit(path, {
+                        onItemComplete: function(e, item, response) {
+                            copyFile(item, buildPath);
+                        },
+                    });
                 }
             }  
         })(imagesPath);
@@ -60,7 +218,13 @@ function compressImages(paths) {
 }
 
 (function() {
-    config.items.map(function(item) {
-        config.MinPng? compressImages(item.images) : '';
+    config.map(function(item) {
+        fs.mkdir(item.buildPath);
+        if (item.images) {
+            unpackImages(item.buildPath, item.images)
+        } 
+        if (item.js) {
+            unpackJs(item.buildPath, item.js);
+        }
     });
 })();

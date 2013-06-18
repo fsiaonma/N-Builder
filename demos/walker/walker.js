@@ -3,6 +3,8 @@ var walk = require('../../libs/walk'),
     options,
     walker;
 
+var files = [];
+
 options = {
     followLinks: false
 };
@@ -18,18 +20,18 @@ walker.on("names", function (root, nodeNamesArray) {
 });
 
 walker.on("directories", function (root, dirStatsArray, next) {
-    console.log(root);
-    console.log(dirStatsArray);
-    console.log(next);
+    // console.log(root);
+    // console.log(dirStatsArray);
+    // console.log(next);
     next();
 });
 
 walker.on("file", function (root, fileStats, next) {
-    console.log(root);
-    console.log(fileStats);
-    console.log(next);
+    // console.log(root);
+    // console.log(fileStats);
+    // console.log(next);
+    files.push(root + "/" + fileStats.name);
     fs.readFile(fileStats.name, function () {
-        // doStuff
         next();
     });
 });
@@ -40,4 +42,7 @@ walker.on("errors", function (root, nodeStatsArray, next) {
 
 walker.on("end", function () {
     console.log("all done");
+    files.map(function(e) {
+        console.log(e);
+    })
 });
