@@ -14,9 +14,11 @@ jsHandler.unpackJs = function(buildPath, jsConfig) {
 
     var index = 0;
     var functions = [];
+
     jsConfig.ignore? functions.push(_walkForIgnore) : '';
     jsConfig.copyOnly? functions.push(_walkForCopy) : '';
     jsConfig.jsEnergy? functions.push(_walkForCompression) : '';
+    
     (functions[index])();
 
     function _nextStep() {
