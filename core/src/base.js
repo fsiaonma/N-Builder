@@ -15,7 +15,7 @@ base.copyFile = function(buildPath, path) {
             }
         });
     });
-}
+};
 
 base.createFloder = function(buildPath, path, callback) {
     var arr = path.split('/');
@@ -36,6 +36,6 @@ base.createFloder = function(buildPath, path, callback) {
             }
         })
     })();
-}
+};
 
 module.exports = base;

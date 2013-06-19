@@ -17,7 +17,7 @@ jsHandler.unpackJs = function(buildPath, jsConfig) {
     jsConfig.ignore? functions.push(_walkForIgnore) : '';
     jsConfig.copyOnly? functions.push(_walkForCopy) : '';
     jsConfig.jsEnergy? functions.push(_walkForCompression) : '';
-    functions[index]();
+    (functions[index])();
 
     function _nextStep() {
         return functions[++index];
@@ -26,31 +26,39 @@ jsHandler.unpackJs = function(buildPath, jsConfig) {
     function _walkForIgnore() {
         var ignoreWalking = 0;
 
-        jsConfig.ignore.map(function(path) {
-            if (path[path.length - 1] == '/') {
-                ++ignoreWalking;
-                var walker = walk.walk(path.substr(0, path.lastIndexOf('/')));
-                walker.on("file", function (root, fileStats, next) {
-                    var filePathName = (root[root.length - 1] == '/') ? root + fileStats.name : root + '/' + fileStats.name
-                    var suffix = filePathName.substr(filePathName.lastIndexOf('.') + 1, filePathName.length - 1);
-                    suffix == "js" ? ignorePath.push(filePathName) : ''
-                    next();
-                });
-                walker.on("end", function() {
-                    if (--ignoreWalking == 0) {
-                        (_nextStep())();
-                    }
-                });
-            } else {
-                var suffix = path.substr(path.lastIndexOf('.') + 1, path.length - 1);
-                if (suffix == "js") {
-                    ignorePath.push(path);
+        jsConfig.ignore.map(function(ignorePath) {
+            (function(path) {
+                var callFunc = arguments.callee;
+                var self = this;
+                if (path[path.length - 1] == '/') {
+                    ++ignoreWalking;
+                    var walker = walk.walk(path.substr(0, path.lastIndexOf('/')));
+                    walker.on("file", function (root, fileStats, next) {
+                        var filePathName = (root[root.length - 1] == '/') ? root + fileStats.name : root + '/' + fileStats.name;
+                        callFunc.call(self, filePathName);
+                        next();
+                    });
+                    walker.on("end", function() {
+                        if (--ignoreWalking == 0) {
+                            (_nextStep())();
+                        }
+                    });
+                } else {
+                    _doMarkIgnore(path);
+                    
                 }
-            }
+            })(ignorePath);
         });
         
         if (ignoreWalking == 0) {
             (_nextStep())();
+        }
+    }
+
+    function _doMarkIgnore(path) {
+        var suffix = path.substr(path.lastIndexOf('.') + 1, path.length - 1);
+        if (suffix == "js") {
+            ignorePath.push(path);
         }
     }
 
@@ -65,7 +73,7 @@ jsHandler.unpackJs = function(buildPath, jsConfig) {
                     ++copyWalking;
                     var walker = walk.walk(path.substr(0, path.lastIndexOf('/')));
                     walker.on("file", function (root, fileStats, next) {
-                        var filePathName = (root[root.length - 1] == '/') ? root + fileStats.name : root + '/' + fileStats.name
+                        var filePathName = (root[root.length - 1] == '/') ? root + fileStats.name : root + '/' + fileStats.name;
                         callFunc.call(self, filePathName);
                         next();
                     });
@@ -106,7 +114,7 @@ jsHandler.unpackJs = function(buildPath, jsConfig) {
                     ++compressWalking;
                     var walker = walk.walk(path.substr(0, path.lastIndexOf('/')));
                     walker.on("file", function (root, fileStats, next) {
-                        var filePathName = (root[root.length - 1] == '/') ? root + fileStats.name : root + '/' + fileStats.name
+                        var filePathName = (root[root.length - 1] == '/') ? root + fileStats.name : root + '/' + fileStats.name;
                         callFunc.call(self, filePathName);
                         next();
                     });

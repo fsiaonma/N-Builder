@@ -18,13 +18,17 @@ imagesHandler.unpackImages = function(buildPath, imagesConfig) {
                     next();
                 });
             } else {
-                var suffix = path.substr(path.lastIndexOf('.') + 1, path.length - 1);
-                if (suffix == "png" || suffix == "jpg") {
-                    smushit.smushit(path);
-                }
+                _doSmushit(path);
             }  
         })(imagesPath);
     });
-}
+
+    function _doSmushit(path) {
+        var suffix = path.substr(path.lastIndexOf('.') + 1, path.length - 1);
+        if (suffix == "png" || suffix == "jpg") {
+            smushit.smushit(path);
+        }
+    }
+};
 
 module.exports = imagesHandler;
