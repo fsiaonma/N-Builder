@@ -12,7 +12,8 @@ var config = require('./config');
             imageHandler.unpackImages(item.buildPath, item.images);
         } 
         if (item.js) {
-            jsHandler.unpackJs(item.buildPath, item.js);
+        	fs.mkdir(item.buildPath + "javascripts");
+            jsHandler.unpackJs(item.buildPath + "javascripts/", item.js);
         }
     });
 })();

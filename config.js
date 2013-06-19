@@ -1,5 +1,5 @@
 var config = config || [{
-    buildPath: './gogo/',
+    buildPath: './production/',
     images: {
         path: ['img/']
     },

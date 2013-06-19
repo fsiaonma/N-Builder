@@ -1,30 +1,38 @@
 var fs = require('../modules/fs'); 
 var util = require("../modules/util");
 
-var base = function() {}
+var base = base || {};
 
-base.copyFile = function(fileIn, fileOutPath) {
-    var is = fs.createReadStream(fileIn);
-    console.log("copy " + fileIn + " to " + fileOutPath + fileIn);
-    var os = fs.createWriteStream(fileOutPath + fileIn);
-    util.pump(is, os, function(err){
-        if(err) {
-            console.log("copy err: " + err);
-        }
+base.copyFile = function(buildPath, path) {
+    var folderPath = path.substr(0, path.lastIndexOf('/'));
+    base.createFloder(buildPath, folderPath, function() {
+        console.log("[copy] copy " + path + " to " + buildPath + path);
+        var is = fs.createReadStream(path);
+        var os = fs.createWriteStream(buildPath + path);
+        util.pump(is, os, function(err){
+            if(err) {
+                console.log("[copy] copy err: " + err);
+            }
+        });
     });
 }
 
-base.createFloder = function(buildPath, path) {
+base.createFloder = function(buildPath, path, callback) {
     var arr = path.split('/');
     var index = 0;
     (function() {
         var callFunc = arguments.callee;
         var self = this;
         fs.readdir(buildPath + arr[index], function(err, files) {
-            err? fs.mkdir(buildPath + arr[index]) : '';
+            if(err) {
+                fs.mkdir(buildPath + arr[index]);
+                console.log("[create floder] create floder " + buildPath + arr[index]);
+            }
             buildPath = buildPath + arr[index] + '/';
             if (++index < arr.length) {
                 callFunc.call(self);
+            } else {
+                callback.call(this);
             }
         })
     })();

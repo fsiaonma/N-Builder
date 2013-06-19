@@ -62,15 +62,8 @@ jsHandler.unpackJs = function(buildPath, jsConfig) {
                 var callFunc = arguments.callee;
                 var self = this;
                 if (path[path.length - 1] == '/') {
-                    base.createFloder(buildPath, path);
                     ++copyWalking;
                     var walker = walk.walk(path.substr(0, path.lastIndexOf('/')));
-                    walker.on("directories", function (root, dirStatsArray, next) {
-                        dirStatsArray.map(function(item) {
-                            base.createFloder(buildPath, root + '/' + item.name);
-                        })
-                        next();
-                    });
                     walker.on("file", function (root, fileStats, next) {
                         var filePathName = (root[root.length - 1] == '/') ? root + fileStats.name : root + '/' + fileStats.name
                         callFunc.call(self, filePathName);
@@ -91,7 +84,7 @@ jsHandler.unpackJs = function(buildPath, jsConfig) {
                     var suffix = path.substr(path.lastIndexOf('.') + 1, path.length - 1);
                     if (suffix == "js") {
                         copyFilesPath.push(path);
-                        base.copyFile(path, buildPath);
+                        base.copyFile(buildPath, path);
                     }
                 }
             })(copyFilePath);
@@ -154,7 +147,7 @@ jsHandler.unpackJs = function(buildPath, jsConfig) {
             var origCode = "";
             var ast = "";
             for (var i = 0, len = fileIn.length; i < len; ++i) {
-                console.log("compressing " + fileIn[i]);
+                console.log("[compressing] compressing " + fileIn[i]);
                 origCode = fs.readFileSync(fileIn[i], 'utf8');
                 ast = jsp.parse(origCode); 
                 ast = pro.ast_mangle(ast); 
