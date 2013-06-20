@@ -1,6 +1,6 @@
 var config = config || [{
-    rootPath: './example/',
-    buildPath: './example/production/',
+    rootPath: '../example/',
+    buildPath: '../example/production/',
     images: {
         path: ['img/']
     },
@@ -10,7 +10,7 @@ var config = config || [{
         ignore: ['js/components/']
     },
     css: {
-        cssEnergy: ['css/']
+        cssEnergy: ['css/'],
         copyOnly: ['css/css1/', 'css/triangle1.css'],
         ignore: ['css/css2/']
     }

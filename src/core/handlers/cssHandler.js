@@ -1,8 +1,8 @@
-var fs = require('../modules/fs');
-var walk = require('../modules/walk');
-var cleanCSS = require('../modules/clean-css/lib/clean');
+var fs = require('../../modules/fs');
+var walk = require('../../modules/walk');
+var cleanCSS = require('../../modules/clean-css/lib/clean');
 
-var base = require('./base');
+var base = require('../base');
 
 var cssHandler = cssHandler || {};
 

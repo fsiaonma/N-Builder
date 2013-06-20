@@ -1,7 +1,7 @@
-var walk = require('../modules/walk');
-var smushit = require('../modules/smushit/smushit');
+var walk = require('../../modules/walk');
+var smushit = require('../../modules/smushit/smushit');
 
-var base = require('./base');
+var base = require('../base');
 
 var imagesHandler = imagesHandler || {};
 

@@ -1,9 +1,9 @@
-var fs = require('../modules/fs'); 
-var walk = require('../modules/walk');
-var jsp = require("../modules/uglify-js").parser;
-var pro = require("../modules/uglify-js").uglify;
+var fs = require('../../modules/fs'); 
+var walk = require('../../modules/walk');
+var jsp = require("../../modules/uglify-js").parser;
+var pro = require("../../modules/uglify-js").uglify;
 
-var base = require('./base');
+var base = require('../base');
 
 var jsHandler = jsHandler || {};
 
