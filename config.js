@@ -1,18 +1,18 @@
 var config = config || [{
-    rootPath: './example/',
-    buildPath: './example/production/',
+    rootPath: ,
+    buildPath: ,
     images: {
-        path: ['img/']
+        path: []
     },
     js: {
-        jsEnergy: ['js/'],
-        copyOnly: ['js/systems/', 'js/doorlayer.js'],
-        ignore: ['js/components/']
+        jsEnergy: [],
+        copyOnly: [],
+        ignore: []
     },
     css: {
-        cssEnergy: ['css/']
-        copyOnly: ['css/css1/', 'css/triangle1.css'],
-        ignore: ['css/css2/']
+        cssEnergy: []
+        copyOnly: [],
+        ignore: []
     }
 }];
 

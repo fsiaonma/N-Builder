@@ -1,6 +1,6 @@
 @echo off
 
-node ./core/app.js
+node ./scr/app.js
 
 echo "build success!!"
 
