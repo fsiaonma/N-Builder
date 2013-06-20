@@ -3,11 +3,11 @@ var util = require("../modules/util");
 
 var base = base || {};
 
-base.copyFile = function(buildPath, path) {
+base.copyFile = function(rootPath, buildPath, path) {
     var folderPath = path.substr(0, path.lastIndexOf('/'));
     base.createFloder(buildPath, folderPath, function() {
         console.log("[copy] copy " + path + " to " + buildPath + path);
-        var is = fs.createReadStream(path);
+        var is = fs.createReadStream(rootPath + path);
         var os = fs.createWriteStream(buildPath + path);
         util.pump(is, os, function(err){
             if(err) {

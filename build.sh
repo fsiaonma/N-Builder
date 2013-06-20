@@ -1,4 +1,4 @@
 
-node ./nb.js
+node ./core/app.js
 
 echo "build success!"

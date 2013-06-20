@@ -1,28 +1,27 @@
-var fs = require('../modules/fs'); 
+var fs = require('../modules/fs');
 var walk = require('../modules/walk');
-var jsp = require("../modules/uglify-js").parser;
-var pro = require("../modules/uglify-js").uglify;
+var cleanCSS = require('../modules/clean-css/lib/clean');
 
 var base = require('./base');
 
-var jsHandler = jsHandler || {};
+var cssHandler = cssHandler || {};
 
-jsHandler.unpackJs = function(rootPath, buildPath, jsConfig) {
+cssHandler.unpackCss = function(rootPath, buildPath, cssConfig) {
     var ignoreFilesPath = [];
     var copyFilesPath = [];
-    var compressionFilesPath = [];
+    var cleanFilesPath = [];
 
     var index = 0;
     var functions = [];
 
-    if (!jsConfig.jsEnergy || jsConfig.jsEnergy.length == 0) {
-        console.log("[unpackJs error] jsEnergy not be found");
+    if (!cssConfig.cssEnergy || cssConfig.cssEnergy.length == 0) {
+        console.log("[unpackCss error] cssEnergy not be found");
         return ;
     }
 
-    jsConfig.ignore? functions.push(_walkForIgnore) : '';
-    jsConfig.copyOnly? functions.push(_walkForCopy) : '';
-    jsConfig.jsEnergy? functions.push(_walkForCompression) : '';
+    cssConfig.ignore? functions.push(_walkForIgnore) : '';
+    cssConfig.copyOnly? functions.push(_walkForCopy) : '';
+    cssConfig.cssEnergy? functions.push(_walkForClean) : '';
     
     (functions[index])();
 
@@ -32,7 +31,7 @@ jsHandler.unpackJs = function(rootPath, buildPath, jsConfig) {
 
     function _walkForIgnore() {
         var ignoreWalking = 0;
-        jsConfig.ignore.map(function(ignoreFilePath) {
+        cssConfig.ignore.map(function(ignorePath) {
             (function(path) {
                 var callFunc = arguments.callee;
                 var self = this;
@@ -55,7 +54,7 @@ jsHandler.unpackJs = function(rootPath, buildPath, jsConfig) {
                     _doIgnore(devPath);
                     
                 }
-            })(ignoreFilePath);
+            })(ignorePath);
         });
         if (ignoreWalking == 0) {
             (_nextStep())();
@@ -64,14 +63,14 @@ jsHandler.unpackJs = function(rootPath, buildPath, jsConfig) {
 
     function _doIgnore(devPath) {
         var suffix = devPath.substr(devPath.lastIndexOf('.') + 1, devPath.length - 1);
-        if (suffix == "js") {
+        if (suffix == "css") {
             ignoreFilesPath.push(devPath);
         }
     }
 
     function _walkForCopy() {
         var copyWalking = 0;
-        jsConfig.copyOnly.map(function(copyFilePath) {
+        cssConfig.copyOnly.map(function(copyFilePath) {
             (function(path) {
                 var callFunc = arguments.callee;
                 var self = this;
@@ -107,15 +106,15 @@ jsHandler.unpackJs = function(rootPath, buildPath, jsConfig) {
             }
         }
         var suffix = devPath.substr(devPath.lastIndexOf('.') + 1, devPath.length - 1);
-        if (suffix == "js") {
+        if (suffix == "css") {
             copyFilesPath.push(devPath);
             base.copyFile(rootPath, buildPath, path);
         }
     }
 
-    function _walkForCompression() {
+    function _walkForClean() {
         var compressWalking = 0;
-        jsConfig.jsEnergy.map(function(jsEnergyPath) {
+        cssConfig.cssEnergy.map(function(cssEnergyPath) {
             (function(path) {
                 var callFunc = arguments.callee;
                 var self = this;
@@ -131,20 +130,20 @@ jsHandler.unpackJs = function(rootPath, buildPath, jsConfig) {
                     });
                     walker.on("end", function() {
                         if (--compressWalking == 0) {
-                            _compressionFiles(compressionFilesPath, buildPath + '/min.js');
+                            _cleanFiles(cleanFilesPath, buildPath + '/min.css');
                         }
                     });
                 } else {
-                    _doCompression(devPath);
+                    _doClean(devPath);
                 }
-            })(jsEnergyPath);
+            })(cssEnergyPath);
         });
         if (compressWalking == 0) {
-            _compressionFiles(compressionFilesPath, buildPath + '/min.js');
+            _cleanFiles(cleanFilesPath, buildPath + '/min.css');
         }
     } 
 
-    function _doCompression(devPath) {
+    function _doClean(devPath) {
         for (var i = 0, len = copyFilesPath.length; i < len; ++i) {
             if (copyFilesPath[i] == devPath) {
                 return ;
@@ -156,27 +155,24 @@ jsHandler.unpackJs = function(rootPath, buildPath, jsConfig) {
             }
         }  
         var suffix = devPath.substr(devPath.lastIndexOf('.') + 1, devPath.length - 1);
-        if (suffix == "js") {
-            compressionFilesPath.push(devPath);
+        if (suffix == "css") {
+            cleanFilesPath.push(devPath);
         }
     }
 
-    function _compressionFiles(fileIn, fileOut) {
+    function _cleanFiles(fileIn, fileOut) {
         if (fileIn.length > 0) {
             var finalCode = [];
             var origCode = "";
-            var ast = "";
             for (var i = 0, len = fileIn.length; i < len; ++i) {
-                console.log("[compressing js] compressing " + fileIn[i]);
+                console.log("[cleaning css] cleaning " + fileIn[i]);
                 origCode = fs.readFileSync(fileIn[i], 'utf8');
-                ast = jsp.parse(origCode); 
-                ast = pro.ast_mangle(ast); 
-                ast = pro.ast_squeeze(ast);
-                finalCode.push(pro.gen_code(ast), ';');
+                var minCss = cleanCSS.process(origCode, { debug: false });
+                finalCode.push(minCss);
             };
             fs.writeFileSync(fileOut, finalCode.join(''), 'utf8');
         }
     }
 };
 
-module.exports = jsHandler;
+module.exports = cssHandler;

@@ -5,20 +5,22 @@ var base = require('./base');
 
 var imagesHandler = imagesHandler || {};
 
-imagesHandler.unpackImages = function(buildPath, imagesConfig) {
+imagesHandler.unpackImages = function(rootPath, buildPath, imagesConfig) {
     imagesConfig.path.map(function(imagesPath) {
         (function(path) {
             var callFunc = arguments.callee;
             var self = this;
-            if (path[path.length - 1] == '/') {
-                var walker = walk.walk(path.substr(0, path.lastIndexOf('/')));
+            var devPath = rootPath + path;
+            if (devPath[devPath.length - 1] == '/') {
+                var walker = walk.walk(devPath.substr(0, devPath.lastIndexOf('/')));
                 walker.on("file", function (root, fileStats, next) {
-                    var filePathName = (root[root.length - 1] == '/') ? root + fileStats.name : root + '/' + fileStats.name
+                    var fileRootPathName = (root[root.length - 1] == '/') ? root + fileStats.name : root + '/' + fileStats.name
+                    var filePathName = fileRootPathName.substr(rootPath.length);
                     callFunc.call(self, filePathName);
                     next();
                 });
             } else {
-                _doSmushit(path);
+                _doSmushit(devPath);
             }  
         })(imagesPath);
     });
