@@ -14,11 +14,6 @@ cssHandler.unpackCss = function(rootPath, buildPath, cssConfig) {
     var index = 0;
     var functions = [];
 
-    if (!cssConfig.cssEnergy || cssConfig.cssEnergy.length == 0) {
-        console.log("[unpackCss error] cssEnergy not be found");
-        return ;
-    }
-
     cssConfig.ignore? functions.push(_walkForIgnore) : '';
     cssConfig.copyOnly? functions.push(_walkForCopy) : '';
     cssConfig.cssEnergy? functions.push(_walkForClean) : '';
