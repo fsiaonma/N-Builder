@@ -20,15 +20,18 @@ imagesHandler.unpackImages = function(rootPath, buildPath, imagesConfig) {
                     next();
                 });
             } else {
-                _doSmushit(devPath);
+                _doSmushit(rootPath, buildPath, path);
             }  
         })(imagesPath);
     });
 
-    function _doSmushit(path) {
-        var suffix = path.substr(path.lastIndexOf('.') + 1, path.length - 1);
+    function _doSmushit(rootPath, buildPath, path) {
+        var devPath = rootPath + path;
+        var suffix = devPath.substr(devPath.lastIndexOf('.') + 1, devPath.length - 1);
         if (suffix == "png" || suffix == "jpg") {
-            smushit.smushit(path);
+            base.copyFile(rootPath, buildPath, path, function() {
+                smushit.smushit(buildPath + path);
+            });
         }
     }
 };
