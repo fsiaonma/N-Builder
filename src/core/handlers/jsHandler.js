@@ -109,7 +109,9 @@ jsHandler.unpackJs = function(rootPath, buildPath, jsConfig) {
         var suffix = devPath.substr(devPath.lastIndexOf('.') + 1, devPath.length - 1);
         if (suffix == "js") {
             copyFilesPath.push(devPath);
-            base.copyFile(rootPath, buildPath, path);
+            var fileInPath = rootPath + path;
+            var fileOutPath = buildPath + path;
+            base.copyFile(fileInPath, fileOutPath);
         }
     }
 

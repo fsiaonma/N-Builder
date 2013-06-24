@@ -3,12 +3,12 @@ var util = require("../modules/util");
 
 var base = base || {};
 
-base.copyFile = function(rootPath, buildPath, path, callback) {
-    var folderPath = path.substr(0, path.lastIndexOf('/'));
-    base.createFloder(buildPath, folderPath, function() {
-        console.log("[copy] copy " + path + " to " + buildPath + path);
-        var is = fs.createReadStream(rootPath + path);
-        var os = fs.createWriteStream(buildPath + path);
+base.copyFile = function(fileInPath, fileOutPath, callback) {
+    var fileOutFolderPath = fileOutPath.substr(0, fileOutPath.lastIndexOf('/'));
+    base.createFloder(fileOutFolderPath, function() {
+        console.log("[copy] copy " + fileInPath + " to " + fileOutPath);
+        var is = fs.createReadStream(fileInPath);
+        var os = fs.createWriteStream(fileOutPath);
         util.pump(is, os, function(err){    
             if(err) {
                 console.log("[copy] copy err: " + err);
@@ -19,24 +19,25 @@ base.copyFile = function(rootPath, buildPath, path, callback) {
     });
 };
 
-base.createFloder = function(buildPath, path, callback) {
+base.createFloder = function(path, callback) {
     var arr = path.split('/');
+    var floderPath = '';
     var index = 0;
     (function() {
         var callFunc = arguments.callee;
         var self = this;
-        fs.readdir(buildPath + arr[index], function(err, files) {
+        fs.readdir(floderPath + arr[index], function(err, files) {
             if(err) {
-                fs.mkdir(buildPath + arr[index]);
-                console.log("[create floder] create floder " + buildPath + arr[index]);
+                fs.mkdir(floderPath + arr[index]);
+                console.log("[create floder] create floder " + floderPath + arr[index]);
             }
-            buildPath = buildPath + arr[index] + '/';
+            floderPath = floderPath + arr[index] + '/';
             if (++index < arr.length) {
                 callFunc.call(self);
             } else {
-                callback.call(this);
+                callback? callback.call(this) : '';
             }
-        })
+        });
     })();
 };
 

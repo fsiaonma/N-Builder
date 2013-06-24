@@ -29,8 +29,10 @@ imagesHandler.unpackImages = function(rootPath, buildPath, imagesConfig) {
         var devPath = rootPath + path;
         var suffix = devPath.substr(devPath.lastIndexOf('.') + 1, devPath.length - 1);
         if (suffix == "png" || suffix == "jpg") {
-            base.copyFile(rootPath, buildPath, path, function() {
-                smushit.smushit(buildPath + path);
+            var fileInPath = rootPath + path;
+            var fileOutPath = buildPath + path;
+            base.copyFile(fileInPath, fileOutPath, function() {
+                smushit.smushit(fileOutPath);
             });
         }
     }

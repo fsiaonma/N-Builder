@@ -103,7 +103,9 @@ cssHandler.unpackCss = function(rootPath, buildPath, cssConfig) {
         var suffix = devPath.substr(devPath.lastIndexOf('.') + 1, devPath.length - 1);
         if (suffix == "css") {
             copyFilesPath.push(devPath);
-            base.copyFile(rootPath, buildPath, path);
+            var fileInPath = rootPath + path;
+            var fileOutPath = buildPath + path;
+            base.copyFile(fileInPath, fileOutPath);
         }
     }
 
