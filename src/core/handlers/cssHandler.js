@@ -16,7 +16,7 @@ cssHandler.unpackCss = function(rootPath, buildPath, cssConfig) {
 
     cssConfig.ignore? functions.push(_walkForIgnore) : '';
     cssConfig.copyOnly? functions.push(_walkForCopy) : '';
-    cssConfig.cssRoot? functions.push(_walkForClean) : '';
+    cssConfig.cssDir? functions.push(_walkForClean) : '';
     
     (functions[index])();
 
@@ -111,7 +111,7 @@ cssHandler.unpackCss = function(rootPath, buildPath, cssConfig) {
 
     function _walkForClean() {
         var compressWalking = 0;
-        cssConfig.cssRoot.map(function(cssRootPath) {
+        cssConfig.cssDir.map(function(cssDirPath) {
             (function(path) {
                 var callFunc = arguments.callee;
                 var self = this;
@@ -133,7 +133,7 @@ cssHandler.unpackCss = function(rootPath, buildPath, cssConfig) {
                 } else {
                     _doClean(devPath);
                 }
-            })(cssRootPath);
+            })(cssDirPath);
         });
         if (compressWalking == 0) {
             _cleanFiles(cleanFilesPath, buildPath + '/min.css');

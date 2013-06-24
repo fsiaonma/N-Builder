@@ -15,14 +15,14 @@ jsHandler.unpackJs = function(rootPath, buildPath, jsConfig) {
     var index = 0;
     var functions = [];
 
-    if (!jsConfig.jsRoot || jsConfig.jsRoot.length == 0) {
-        console.log("[unpackJs error] jsRoot not be found");
+    if (!jsConfig.jsDir || jsConfig.jsDir.length == 0) {
+        console.log("[unpackJs error] jsDir not be found");
         return ;
     }
 
     jsConfig.ignore? functions.push(_walkForIgnore) : '';
     jsConfig.copyOnly? functions.push(_walkForCopy) : '';
-    jsConfig.jsRoot? functions.push(_walkForCompression) : '';
+    jsConfig.jsDir? functions.push(_walkForCompression) : '';
     
     (functions[index])();
 
@@ -117,7 +117,7 @@ jsHandler.unpackJs = function(rootPath, buildPath, jsConfig) {
 
     function _walkForCompression() {
         var compressWalking = 0;
-        jsConfig.jsRoot.map(function(jsRootPath) {
+        jsConfig.jsDir.map(function(jsDirPath) {
             (function(path) {
                 var callFunc = arguments.callee;
                 var self = this;
@@ -139,7 +139,7 @@ jsHandler.unpackJs = function(rootPath, buildPath, jsConfig) {
                 } else {
                     _doCompression(devPath);
                 }
-            })(jsRootPath);
+            })(jsDirPath);
         });
         if (compressWalking == 0) {
             _compressionFiles(compressionFilesPath, buildPath + '/min.js');
