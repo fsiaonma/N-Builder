@@ -7,13 +7,13 @@ var config = config || [{
     },
     js: {
         jsBuildPath: '',
-        jsEnergy: [],
+        jsRoot: [],
         copyOnly: [],
         ignore: []
     },
     css: {
         cssBuildPath: '',
-        cssEnergy: []
+        cssRoot: []
         copyOnly: [],
         ignore: []
     }
