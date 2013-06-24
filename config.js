@@ -2,17 +2,17 @@ var config = config || [{
     rootPath: '',
     buildPath: '',
     images: {
-        buildPath: '',
+        imagesBuildPath: '',
         path: []
     },
     js: {
-        buildPath: '',
+        jsBuildPath: '',
         jsEnergy: [],
         copyOnly: [],
         ignore: []
     },
     css: {
-        buildPath: '',
+        cssBuildPath: '',
         cssEnergy: []
         copyOnly: [],
         ignore: []

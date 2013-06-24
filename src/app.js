@@ -11,19 +11,19 @@ var config = require('../config');
     config.map(function(item) {
         fs.mkdir(item.buildPath);
         if (item.images) {
-            var imagesFloderPath = item.buildPath + (item.images.buildPath? item.images.buildPath : '');
+            var imagesFloderPath = item.buildPath + (item.images.imagesBuildPath? item.images.imagesBuildPath : '');
             base.createFloder(imagesFloderPath, function() {
                 imageHandler.unpackImages(item.rootPath, imagesFloderPath, item.images);
             });
         } 
         if (item.js) {
-            var jsFloderPath = item.buildPath + (item.js.buildPath? item.js.buildPath : '');
+            var jsFloderPath = item.buildPath + (item.js.jsBuildPath? item.js.jsBuildPath : '');
             base.createFloder(jsFloderPath, function() {
                 jsHandler.unpackJs(item.rootPath, jsFloderPath, item.js);
             });
         }
         if (item.css) {
-            var cssFloderPath = item.buildPath + (item.css.buildPath? item.css.buildPath : '');
+            var cssFloderPath = item.buildPath + (item.css.cssBuildPath? item.css.cssBuildPath : '');
             base.createFloder(cssFloderPath, function() {
                 cssHandler.unpackCss(item.rootPath, cssFloderPath, item.css);
             });

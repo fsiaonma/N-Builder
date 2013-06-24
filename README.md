@@ -16,17 +16,17 @@ config.js 内含一对象数组, 数组中每个对象对应一个工程（可�
 >         rootPath: '',
 >         buildPath: '',
 >         images: {
->             buildPath: '',
+>             imagesBuildPath: '',
 >             path: []
 >         },
 >         js: {
->             buildPath: '',
+>             jsBuildPath: '',
 >             jsEnergy: [],
 >             copyOnly: [],
 >             ignore: []
 >         },
 >         css: {
->             buildPath: '',
+>             cssBuildPath: '',
 >             cssEnergy: []
 >             copyOnly: [],
 >             ignore: []
@@ -44,11 +44,11 @@ config.js 内含一对象数组, 数组中每个对象对应一个工程（可�
 ### images 项如何配置 ?
 
 >     images: {
->         buildPath: '',
+>         imagesBuildPath: '',
 >         path: []
 >     },
 >       
->     buildPath: 指定 images 压缩打包的目录（选填），默认配置到 buildPath 的根目录。
+>     imagesBuildPath: 指定 images 压缩打包的目录（选填），默认配置到 buildPath 目录。
 >  
 >     path: 需要压缩的图片的路径集合（可多填），可配置 文件路径 以及 文件夹路径。
 >           若配置的是文件夹路径，N-Builder 将压缩该文件夹下所有 jpg 和 png 图片。
@@ -58,13 +58,13 @@ config.js 内含一对象数组, 数组中每个对象对应一个工程（可�
 ### js 项如何配置 ?
 
 >     js: {
->         buildPath: '',
+>         jsBuildPath: '',
 >         jsEnergy: [],
 >         copyOnly: [],
 >         ignore: []
 >     },
 >       
->     buildPath: 指定 js 压缩打包的目录（选填），默认配置到 buildPath 的根目录。
+>     jsBuildPath: 指定 js 压缩打包的目录（选填），默认配置到 buildPath 目录。
 >  
 >     jsEnergy: 需要压缩的 js 文件的路径集合（可多填），可配置 文件路径 以及 文件夹路径。
 >               若配置的是文件夹路径，N-Builder 将压缩该文件夹下所有除 copyOnly 和 ignore 之外的 js 文件。
@@ -80,13 +80,13 @@ config.js 内含一对象数组, 数组中每个对象对应一个工程（可�
 ### css 项如何配置 ?
 
 >     css: {
->         buildPath: '',
+>         cssBuildPath: '',
 >         cssEnergy: [],
 >         copyOnly: [],
 >         ignore: []
 >     },
 >
->     buildPath: 指定 css 压缩打包的目录（选填），默认配置到 buildPath 的根目录。
+>     cssBuildPath: 指定 css 压缩打包的目录（选填），默认配置到 buildPath 目录。
 >         
 >     cssEnergy: 需要压缩的 css 文件的路径集合（可多填），可配置 文件路径 以及 文件夹路径。
 >                若配置的是文件夹路径，N-Builder 将压缩该文件夹下所有除 copyOnly 和 ignore 之外的 css 文件。
@@ -107,17 +107,17 @@ config.js 内含一对象数组, 数组中每个对象对应一个工程（可�
 >         rootPath: '../example/',
 >         buildPath: '../example/production/',
 >         images: {
->             buildPath: 'images/',
+>             imagesBuildPath: 'images/',
 >             path: ['img/']
 >         },
 >         js: {
->             buildPath: 'javascripts/',
+>             jsBuildPath: 'javascripts/',
 >             jsEnergy: ['js/'],
 >             copyOnly: ['js/systems/', 'js/doorlayer.js'],
 >             ignore: ['js/components/']
 >         },
 >         css: {
->             buildPath: 'css/',
+>             cssBuildPath: 'css/',
 >             cssEnergy: ['css/'],
 >             copyOnly: ['css/css1/', 'css/triangle1.css'],
 >             ignore: ['css/css2/']
