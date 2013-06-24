@@ -10,15 +10,16 @@ var config = require('../config');
     config.map(function(item) {
         fs.mkdir(item.buildPath);
         if (item.images) {
-            imageHandler.unpackImages(item.rootPath, item.buildPath, item.images);
+            var buildPath = item.buildPath + (item.images.buildPath? item.images.buildPath : '');
+            imageHandler.unpackImages(item.rootPath, buildPath, item.images);
         } 
         if (item.js) {
-        	fs.mkdir(item.buildPath + "javascripts");
-            jsHandler.unpackJs(item.rootPath, item.buildPath + "javascripts/", item.js);
+            var buildPath = item.buildPath + (item.js.buildPath? item.js.buildPath : '');
+            jsHandler.unpackJs(item.rootPath, buildPath, item.js);
         }
         if (item.css) {
-            fs.mkdir(item.buildPath + "css");
-            cssHandler.unpackCss(item.rootPath, item.buildPath + "css/", item.css);
+            var buildPath = item.buildPath + (item.css.buildPath? item.css.buildPath : '');
+            cssHandler.unpackCss(item.rootPath, buildPath, item.css);
         }
     });
 })();
