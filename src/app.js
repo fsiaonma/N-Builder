@@ -7,26 +7,41 @@ var cssHandler = require('./core/handlers/cssHandler');
 
 var config = require('../config');
 
+function dipatcher(item) {
+    for (var i in item) {
+        switch(i) {
+            case "images": {
+                var imageConfig = item[i];
+                var imagesFloderPath = item.buildPath + (imageConfig.imagesBuildPath? imageConfig.imagesBuildPath : '');
+                base.createFloder(imagesFloderPath, function() {
+                    imageHandler.unpackImages(item.rootPath, imagesFloderPath, imageConfig);
+                });
+                break ;
+            }
+            case "js": {
+                var jsConfig = item[i];
+                var jsFloderPath = item.buildPath + (jsConfig.jsBuildPath? jsConfig.jsBuildPath : '');
+                base.createFloder(jsFloderPath, function() {
+                    jsHandler.unpackJs(item.rootPath, jsFloderPath, jsConfig);
+                });
+                break ;
+            }
+            case "css": {
+                var cssConfig = item[i];
+                var cssFloderPath = item.buildPath + (cssConfig.cssBuildPath? cssConfig.cssBuildPath : '');
+                base.createFloder(cssFloderPath, function() {
+                    cssHandler.unpackCss(item.rootPath, cssFloderPath, cssConfig);
+                });
+                break;
+            }
+        }
+    }
+}
+
+
 (function() {
     config.map(function(item) {
         fs.mkdir(item.buildPath);
-        if (item.images) {
-            var imagesFloderPath = item.buildPath + (item.images.imagesBuildPath? item.images.imagesBuildPath : '');
-            base.createFloder(imagesFloderPath, function() {
-                imageHandler.unpackImages(item.rootPath, imagesFloderPath, item.images);
-            });
-        } 
-        if (item.js) {
-            var jsFloderPath = item.buildPath + (item.js.jsBuildPath? item.js.jsBuildPath : '');
-            base.createFloder(jsFloderPath, function() {
-                jsHandler.unpackJs(item.rootPath, jsFloderPath, item.js);
-            });
-        }
-        if (item.css) {
-            var cssFloderPath = item.buildPath + (item.css.cssBuildPath? item.css.cssBuildPath : '');
-            base.createFloder(cssFloderPath, function() {
-                cssHandler.unpackCss(item.rootPath, cssFloderPath, item.css);
-            });
-        }
+        dipatcher(item);
     });
 })();
