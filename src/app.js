@@ -12,9 +12,8 @@ function dipatcher(item) {
         switch(i) {
             case "images": {
                 var imageConfig = item[i];
-                var imagesFloderPath = item.buildPath + (imageConfig.imagesBuildPath? imageConfig.imagesBuildPath : '');
-                base.createFloder(imagesFloderPath, function() {
-                    imageHandler.unpackImages(item.rootPath, imagesFloderPath, imageConfig);
+                base.createFloder(item.buildPath, function() {
+                    imageHandler.unpackImages(item.rootPath, item.buildPath, imageConfig);
                 });
                 break ;
             }

@@ -15,14 +15,9 @@ jsHandler.unpackJs = function(rootPath, buildPath, jsConfig) {
     var index = 0;
     var functions = [];
 
-    if (!jsConfig.jsDir || jsConfig.jsDir.length == 0) {
-        console.log("[unpackJs error] jsDir not be found");
-        return ;
-    }
-
     jsConfig.ignore? functions.push(_walkForIgnore) : '';
     jsConfig.copyOnly? functions.push(_walkForCopy) : '';
-    jsConfig.jsDir? functions.push(_walkForCompression) : '';
+    jsConfig.compression? functions.push(_walkForCompression) : '';
     
     (functions[index])();
 
@@ -116,34 +111,36 @@ jsHandler.unpackJs = function(rootPath, buildPath, jsConfig) {
     }
 
     function _walkForCompression() {
-        var compressWalking = 0;
-        jsConfig.jsDir.map(function(jsDirPath) {
-            (function(path) {
-                var callFunc = arguments.callee;
-                var self = this;
-                var devPath = rootPath + path;
-                if (devPath[devPath.length - 1] == '/') {
-                    ++compressWalking;
-                    var walker = walk.walk(devPath.substr(0, devPath.lastIndexOf('/')));
-                    walker.on("file", function (root, fileStats, next) {
-                        var fileRootPathName = (root[root.length - 1] == '/') ? root + fileStats.name : root + '/' + fileStats.name;
-                        var filePathName = fileRootPathName.substr(rootPath.length);
-                        callFunc.call(self, filePathName);
-                        next();
-                    });
-                    walker.on("end", function() {
-                        if (--compressWalking == 0) {
-                            _compressionFiles(compressionFilesPath, buildPath + '/min.js');
-                        }
-                    });
-                } else {
-                    _doCompression(devPath);
+        jsConfig.compression.map(function(compressionConfig) {
+            (function(config) {
+                var compressWalking = 0;
+                config.dir.map(function(path) {
+                    var callFunc = arguments.callee;
+                    var self = this;
+                    var devPath = rootPath + path;
+                    if (devPath[devPath.length - 1] == '/') {
+                        ++compressWalking;
+                        var walker = walk.walk(devPath.substr(0, devPath.lastIndexOf('/')));
+                        walker.on("file", function (root, fileStats, next) {
+                            var fileRootPathName = (root[root.length - 1] == '/') ? root + fileStats.name : root + '/' + fileStats.name;
+                            var filePathName = fileRootPathName.substr(rootPath.length);
+                            callFunc.call(self, filePathName);
+                            next();
+                        });
+                        walker.on("end", function() {
+                            if (--compressWalking == 0) {
+                                _compressionFiles(compressionFilesPath, buildPath + (config.outputFileName? '/' + config.outputFileName : '/min.js'));
+                            }
+                        });
+                    } else {
+                        _doCompression(devPath);
+                    }
+                });
+                if (compressWalking == 0) {
+                    _compressionFiles(compressionFilesPath, buildPath + (config.outputFileName? '/' + config.outputFileName : '/min.js'));
                 }
-            })(jsDirPath);
+            })(compressionConfig);
         });
-        if (compressWalking == 0) {
-            _compressionFiles(compressionFilesPath, buildPath + '/min.js');
-        }
     } 
 
     function _doCompression(devPath) {

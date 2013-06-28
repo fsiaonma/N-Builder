@@ -16,7 +16,7 @@ cssHandler.unpackCss = function(rootPath, buildPath, cssConfig) {
 
     cssConfig.ignore? functions.push(_walkForIgnore) : '';
     cssConfig.copyOnly? functions.push(_walkForCopy) : '';
-    cssConfig.cssDir? functions.push(_walkForClean) : '';
+    cssConfig.compression? functions.push(_walkForClean) : '';
     
     (functions[index])();
 
@@ -110,34 +110,36 @@ cssHandler.unpackCss = function(rootPath, buildPath, cssConfig) {
     }
 
     function _walkForClean() {
-        var compressWalking = 0;
-        cssConfig.cssDir.map(function(cssDirPath) {
-            (function(path) {
-                var callFunc = arguments.callee;
-                var self = this;
-                var devPath = rootPath + path;
-                if (devPath[devPath.length - 1] == '/') {
-                    ++compressWalking;
-                    var walker = walk.walk(devPath.substr(0, devPath.lastIndexOf('/')));
-                    walker.on("file", function (root, fileStats, next) {
-                        var fileRootPathName = (root[root.length - 1] == '/') ? root + fileStats.name : root + '/' + fileStats.name;
-                        var filePathName = fileRootPathName.substr(rootPath.length);
-                        callFunc.call(self, filePathName);
-                        next();
-                    });
-                    walker.on("end", function() {
-                        if (--compressWalking == 0) {
-                            _cleanFiles(cleanFilesPath, buildPath + '/min.css');
-                        }
-                    });
-                } else {
-                    _doClean(devPath);
+        cssConfig.compression.map(function(compressionConfig) {
+            (function(config) {
+                var compressWalking = 0;
+                config.dir.map(function(path) {
+                    var callFunc = arguments.callee;
+                    var self = this;
+                    var devPath = rootPath + path;
+                    if (devPath[devPath.length - 1] == '/') {
+                        ++compressWalking;
+                        var walker = walk.walk(devPath.substr(0, devPath.lastIndexOf('/')));
+                        walker.on("file", function (root, fileStats, next) {
+                            var fileRootPathName = (root[root.length - 1] == '/') ? root + fileStats.name : root + '/' + fileStats.name;
+                            var filePathName = fileRootPathName.substr(rootPath.length);
+                            callFunc.call(self, filePathName);
+                            next();
+                        });
+                        walker.on("end", function() {
+                            if (--compressWalking == 0) {
+                                _cleanFiles(cleanFilesPath, buildPath + (config.outputFileName? '/' + config.outputFileName : '/min.js'));
+                            }
+                        });
+                    } else {
+                        _doClean(devPath);
+                    }
+                })
+                if (compressWalking == 0) {
+                    _cleanFiles(cleanFilesPath, buildPath + (config.outputFileName? '/' + config.outputFileName : '/min.css'));
                 }
-            })(cssDirPath);
+            })(compressionConfig);
         });
-        if (compressWalking == 0) {
-            _cleanFiles(cleanFilesPath, buildPath + '/min.css');
-        }
     } 
 
     function _doClean(devPath) {
