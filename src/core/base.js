@@ -26,16 +26,23 @@ base.createFloder = function(path, callback) {
     (function() {
         var callFunc = arguments.callee;
         var self = this;
-        fs.readdir(floderPath + arr[index], function(err, files) {
+        floderPath = floderPath + arr[index] + '/';
+        fs.readdir(floderPath, function(err, files) {
             if(err) {
-                fs.mkdir(floderPath + arr[index]);
-                console.log("[create floder] create floder " + floderPath + arr[index]);
-            }
-            floderPath = floderPath + arr[index] + '/';
-            if (++index < arr.length) {
-                callFunc.call(self);
+                fs.mkdir(floderPath, 0777, function(err) {
+                    console.log("[create floder] create floder " + floderPath);
+                    if (++index < arr.length) {
+                        callFunc.call(self);
+                    } else {
+                        callback? callback() : '';
+                    }
+                });
             } else {
-                callback? callback.call(this) : '';
+                if (++index < arr.length) {
+                    callFunc.call(self);
+                } else {
+                    callback? callback() : '';
+                }
             }
         });
     })();

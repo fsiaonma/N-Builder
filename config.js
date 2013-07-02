@@ -1,23 +1,25 @@
 var config = config || [{
     rootPath: '',
     buildPath: '',
+    resources: {
+        copyOnly: [],
+        ignore: []
+    },
     images: {
         path: []
     },
     js: {
-        jsBuildPath: '',
         compression: [{
             dir: [],
-            outputFileName: ''
+            outputFile: ''
         }],
         copyOnly: [],
         ignore: []
     },
     css: {
-        cssBuildPath: '',
         compression: [{
             dir: [],
-            outputFileName: ''
+            outputFile: ''
         }],
         copyOnly: [],
         ignore: []

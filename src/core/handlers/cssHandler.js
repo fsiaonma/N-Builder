@@ -128,7 +128,7 @@ cssHandler.unpackCss = function(rootPath, buildPath, cssConfig) {
                         });
                         walker.on("end", function() {
                             if (--compressWalking == 0) {
-                                _cleanFiles(cleanFilesPath, buildPath + (config.outputFileName? '/' + config.outputFileName : '/min.js'));
+                                _cleanFiles(cleanFilesPath, buildPath + (config.outputFile? config.outputFile : '/min.js'));
                             }
                         });
                     } else {
@@ -136,7 +136,7 @@ cssHandler.unpackCss = function(rootPath, buildPath, cssConfig) {
                     }
                 })
                 if (compressWalking == 0) {
-                    _cleanFiles(cleanFilesPath, buildPath + (config.outputFileName? '/' + config.outputFileName : '/min.css'));
+                    _cleanFiles(cleanFilesPath, buildPath + (config.outputFile? config.outputFile : '/min.css'));
                 }
             })(compressionConfig);
         });
@@ -169,7 +169,11 @@ cssHandler.unpackCss = function(rootPath, buildPath, cssConfig) {
                 var minCss = cleanCSS.process(origCode, { debug: false });
                 finalCode.push(minCss);
             };
-            fs.writeFileSync(fileOut, finalCode.join(''), 'utf8');
+
+            console.log(fileOut + 'sssssss');
+            base.createFloder(fileOut.substr(0, fileOut.lastIndexOf("/")), function() {
+                fs.writeFileSync(fileOut, finalCode.join(''), 'utf8');
+            });
         }
     }
 };
