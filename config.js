@@ -1,4 +1,9 @@
-var config = config || [{
+var config = config || {
+    unpackProjects: []
+};
+
+config.projects = [{
+    projectName: '',
     rootPath: '',
     buildPath: '',
     resources: {
@@ -6,7 +11,9 @@ var config = config || [{
         ignore: []
     },
     images: {
-        path: []
+        compression: [],
+        copyOnly: [],
+        ignore: []
     },
     js: {
         compression: [{

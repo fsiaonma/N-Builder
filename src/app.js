@@ -12,8 +12,8 @@ function dipatcher(item) {
     for (var i in item) {
         switch(i) {
             case "images": {
-                var imageConfig = item[i];
-                imageHandler.unpackImages(item.rootPath, item.buildPath, imageConfig);
+                var imagesConfig = item[i];
+                imageHandler.unpackImages(item.rootPath, item.buildPath, imagesConfig);
                 break ;
             }
             case "js": {
@@ -36,9 +36,21 @@ function dipatcher(item) {
 }
 
 (function() {
-    config.map(function(item) {
-        fs.mkdir(item.buildPath, 10, function() {
-            dipatcher(item);
-        });
+    var unpackProjects = config.unpackProjects;
+    config.projects.map(function(item) {
+        if (unpackProjects == 'all') {
+            fs.mkdir(item.buildPath, 10, function() {
+                dipatcher(item);
+            });
+        } else {
+            var projectName = item.projectName;
+            unpackProjects.map(function(name) {
+                if (name == projectName) {
+                    fs.mkdir(item.buildPath, 10, function() {
+                        dipatcher(item);
+                    });
+                } 
+            });
+        }
     });
 })();
