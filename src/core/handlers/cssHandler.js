@@ -128,7 +128,7 @@ cssHandler.unpackCss = function(rootPath, buildPath, cssConfig) {
                         });
                         walker.on("end", function() {
                             if (--compressWalking == 0) {
-                                _cleanFiles(cleanFilesPath, buildPath + (config.outputFile? config.outputFile : '/min.js'));
+                                _cleanFiles(cleanFilesPath, buildPath + (config.outputFile? config.outputFile : '/min.css'));
                             }
                         });
                     } else {
