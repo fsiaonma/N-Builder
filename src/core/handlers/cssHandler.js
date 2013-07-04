@@ -170,7 +170,6 @@ cssHandler.unpackCss = function(rootPath, buildPath, cssConfig) {
                 finalCode.push(minCss);
             };
 
-            console.log(fileOut + 'sssssss');
             base.createFloder(fileOut.substr(0, fileOut.lastIndexOf("/")), function() {
                 fs.writeFileSync(fileOut, finalCode.join(''), 'utf8');
             });
