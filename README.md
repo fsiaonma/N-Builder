@@ -23,9 +23,9 @@ N-Build 是一个基于nodejs 的 web 工程打包工具。提供了 js, css 压
 
 config.js 内涵一个对象 config, config 对象目前拥有 2 个属性：
 
-+	1. unpackProjects: []，需要打包的项目名，若配置 unpackProjects: 'all', 则打包所有项目。
++ unpackProjects: [ ]，需要打包的项目名，若配置 unpackProjects: 'all', 则打包所有项目。
 
-+	2. projects: []，一对象数组 数组中每个对象对应一个工程（可同时配置多个对象，同时打包多个工程），每个对象（数组项）中有 7 个可配置属性，如下图所示：
++ projects: [ ]，一对象数组 数组中每个对象对应一个工程（可同时配置多个对象，同时打包多个工程），每个对象（数组项）中有 7 个可配置属性，如下图所示：
 
 >     config.projects = [{
 >		  projectName: '',      
