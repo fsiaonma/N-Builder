@@ -1,5 +1,5 @@
 var config = config || {
-    unpackProjects: []      // 配置需要打包的项目名，若配置 unpackProjects: 'all', 则打包所有项目。
+    unpackProjects: ["all"]      // 配置需要打包的项目名，若配置 unpackProjects: 'all', 则打包所有项目。
 };
 
 /**
@@ -20,8 +20,8 @@ var config = config || {
  */
 config.projects = [{
     projectName: '',        // 项目名称。（必填，项目的唯一标识，不能与其他项目重复）
-    rootPath: '',           // 项目的相对路径。（必填。必须以 '/' 结尾）
-    buildPath: '',          // 项目打包的目标路径。（必填。必须以 '/' 结尾）
+    rootPath: './css/',           // 项目的相对路径。（必填。必须以 '/' 结尾）
+    buildPath: './build/',          // 项目打包的目标路径。（必填。必须以 '/' 结尾）
     resources: {            // 资源打包配置项
         copyOnly: [],           // 需要复制的资源路径，相对于 rootPath。（选填。接受文件路径或文件夹路径，若配置文件夹路径必须以 '/' 结尾）
         ignore: []              // 不用打包的资源路径，相对于 rootPath。（选填。接受文件路径或文件夹路径，若配置文件夹路径必须以 '/' 结尾）
@@ -36,16 +36,24 @@ config.projects = [{
             dir: [],                // 需要压缩的 js 文件路径，相对于 rootPath。（必填。接受文件路径或文件夹路径，若配置文件夹路径必须以 '/' 结尾）
             outputFile: ''          // 压缩合并后的 js 文件名。 （选填。默认为 min.js）
         }],
+        merge: [{               // javascript 合并配置项。（数组中可配置多个对象）
+            dir: [],                // 需要合并的 js 文件路径，相对于 rootPath。（必填。接受文件路径或文件夹路径，若配置文件夹路径必须以 '/' 结尾）
+            outputFile: ''          // 合并后的 js 文件名。 （选填。默认为 merge.js）
+        }],
         copyOnly: [],           // 需要复制的 js 文件路径，相对于 rootPath。（选填。接受文件路径或文件夹路径，若配置文件夹路径必须以 '/' 结尾）
         ignore: []              // 不用打包的 js 文件路径，相对于 rootPath。（选填。接受文件路径或文件夹路径，若配置文件夹路径必须以 '/' 结尾）
     },
     css: {                  // css 打包压缩配置项
         compression: [{         // css 压缩配置项。（数组中可配置多个对象）
-            dir: [],                // 需要压缩的 css 文件路径，相对于 rootPath。（必填。接受文件路径路径或文件夹路径，若配置文件夹路径必须以 '/' 结尾）
-            outputFile: ''          // 压缩合并后的 css 文件名。（选填。默认为 min.css）
+            dir: ["1.css", "2.css", "3.css", "4.css"],                // 需要压缩的 css 文件路径，相对于 rootPath。（必填。接受文件路径路径或文件夹路径，若配置文件夹路径必须以 '/' 结尾）
+            outputFile: 'min.css'          // 压缩合并后的 css 文件名。（选填。默认为 min.css）
         }],
-        copyOnly: [],           // 需要复制的 css 文件路径，相对于 rootPath。（选填。接受文件路径或文件夹路径，若配置文件夹路径必须以 '/' 结尾）
-        ignore: []              // 不用打包的 css 文件路径，相对于 rootPath。（选填。接受文件路径或文件夹路径，若配置文件夹路径必须以 '/' 结尾）
+        merge: [{               // css 合并配置项。（数组中可配置多个对象）
+            dir: ["1.css", "2.css", "3.css", "4.css"],                // 需要合并的 css 文件路径，相对于 rootPath。（必填。接受文件路径或文件夹路径，若配置文件夹路径必须以 '/' 结尾）
+            outputFile: 'merge.css'          // 合并后的 css 文件名。 （选填。默认为 merge.css）
+        }],
+        copyOnly: ["icon.css"],           // 需要复制的 css 文件路径，相对于 rootPath。（选填。接受文件路径或文件夹路径，若配置文件夹路径必须以 '/' 结尾）
+        ignore: ["style.css"]              // 不用打包的 css 文件路径，相对于 rootPath。（选填。接受文件路径或文件夹路径，若配置文件夹路径必须以 '/' 结尾）
     }
 }];
 
