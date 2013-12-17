@@ -1,7 +1,7 @@
-var walk = require('../../../modules/walk');
-var smushit = require('../../../modules/smushit/smushit');
+var walk = require('walk');
+var smushit = require('node-smushit/smushit');
 
-var base = require('../../base');
+var base = require('../../common/base');
 
 var imagesCompression = (function() {
     var compressionFilesPath = [];

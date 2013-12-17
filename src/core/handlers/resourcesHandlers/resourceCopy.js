@@ -1,5 +1,5 @@
-var walk = require('../../../modules/walk');
-var base = require('../../base');
+var walk = require('walk');
+var base = require('../../common/base');
 
 var resourceCopy = (function() {
     var copyFilesPath = [];

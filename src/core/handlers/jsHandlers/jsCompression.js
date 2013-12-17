@@ -1,9 +1,9 @@
-var fs = require('../../../modules/fs'); 
-var walk = require('../../../modules/walk');
+var fs = require('fs'); 
+var walk = require('walk');
+var jsp = require("uglify-js").parser;
+var pro = require("uglify-js").uglify;
 
-var base = require('../../base');
-var jsp = require("../../../modules/uglify-js").parser;
-var pro = require("../../../modules/uglify-js").uglify;
+var base = require('../../common/base');
 
 var jsCompression = (function() {
 	var compressionFilesPath = [];

@@ -1,4 +1,4 @@
-var walk = require('../../../modules/walk');
+var walk = require('walk');
 
 var jsIgnore = (function() {
 	var ignoreFilesPath = [];

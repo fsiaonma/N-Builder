@@ -1,7 +1,7 @@
-var fs = require('../../../modules/fs'); 
-var walk = require('../../../modules/walk');
+var fs = require('fs'); 
+var walk = require('walk');
 
-var base = require('../../base');
+var base = require('../../common/base');
 
 var jsMerge = (function() {
     var mergeFilesPath = [];

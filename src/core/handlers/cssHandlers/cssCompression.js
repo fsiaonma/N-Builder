@@ -1,8 +1,9 @@
-var fs = require('../../../modules/fs'); 
-var walk = require('../../../modules/walk');
+var fs = require('fs'); 
+var walk = require('walk');
+var cleanCSS = require('clean-css/lib/clean');
 
-var base = require('../../base');
-var cleanCSS = require('../../../modules/clean-css/lib/clean');
+var base = require('../../common/base');
+
 
 var cssCompression = (function() {
 	var compressionFilesPath = [];

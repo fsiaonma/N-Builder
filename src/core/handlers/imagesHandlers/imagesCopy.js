@@ -1,6 +1,6 @@
-var walk = require('../../../modules/walk');
+var walk = require('walk');
 
-var base = require('../../base');
+var base = require('../../common/base');
 
 var imagesCopy = (function() {
     var copyFilesPath = [];

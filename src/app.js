@@ -1,6 +1,6 @@
-var fs  = require('./modules/fs'); 
+var fs  = require('fs'); 
 
-var base = require('./core/base.js');
+var base = require('./core/common/base.js');
 var imageHandler = require('./core/handlers/imagesHandler');
 var jsHandler = require('./core/handlers/jsHandler');
 var cssHandler = require('./core/handlers/cssHandler');
