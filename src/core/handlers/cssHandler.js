@@ -27,15 +27,13 @@ cssHandler.unpackCss = function(rootPath, buildPath, cssConfig) {
     }
 
     var merge = function() {
-        cssMerge.walkForPaths(rootPath, buildPath, cssConfig, paths, function(mergePaths) {
-            paths.merge = mergePaths;
+        cssMerge.walkForPaths(rootPath, buildPath, cssConfig, paths, function() {
             (nextStep())();
         })
     }
 
     var compression = function() {
-        cssCompression.walkForPaths(rootPath, buildPath, cssConfig, paths, function(compressionPaths) {
-            paths.compression = compressionPaths;
+        cssCompression.walkForPaths(rootPath, buildPath, cssConfig, paths, function() {
             (nextStep())();
         })
     }

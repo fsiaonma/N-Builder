@@ -49,7 +49,7 @@ var imagesCompression = (function() {
                     });
                     walker.on("end", function() {
                         if (--compressWalking == 0) {
-                            callback && callback(compressionFilesPath);
+                            callback && callback();
                         }
                     });
                 } else {
@@ -58,7 +58,7 @@ var imagesCompression = (function() {
             })(imagesPath);
         });
         if (compressWalking == 0) {
-            callback && callback(compressionFilesPath);
+            callback && callback();
         }
     }
 

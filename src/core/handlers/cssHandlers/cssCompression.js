@@ -46,6 +46,7 @@ var cssCompression = (function() {
 
 	o.walkForPaths = function(rootPath, buildPath, cssConfig, paths, callback) {
         cssConfig.compression.map(function(compressionConfig) {
+            compressionFilesPath = [];
             (function(config) {
                 var compressWalking = 0;
                 config.dir.map(function(path) {
@@ -64,7 +65,7 @@ var cssCompression = (function() {
                         walker.on("end", function() {
                             if (--compressWalking == 0) {
                                 doCleanFiles(compressionFilesPath, buildPath + (config.outputFile? config.outputFile : '/min.css'));
-                                callback && callback(compressionFilesPath);
+                                callback && callback();
                             }
                         });
                     } else {
@@ -73,7 +74,7 @@ var cssCompression = (function() {
                 })
                 if (compressWalking == 0) {
                     doCleanFiles(compressionFilesPath, buildPath + (config.outputFile? config.outputFile : '/min.css'));
-                    callback && callback(compressionFilesPath);
+                    callback && callback();
                 }
             })(compressionConfig);
         });

@@ -41,6 +41,7 @@ var cssMerge = (function() {
 
     o.walkForPaths = function(rootPath, buildPath, cssConfig, paths, callback) {
         cssConfig.merge.map(function(mergeConfig) {
+            mergeFilesPath = [];
             (function(config) {
                 var mergeWalking = 0;
                 config.dir.map(function(path) {
@@ -59,7 +60,7 @@ var cssMerge = (function() {
                         walker.on("end", function() {
                             if (--mergeWalking == 0) {
                                 doMerge(mergeFilesPath, buildPath + (config.outputFile? config.outputFile : '/merge.css'));
-                                callback && callback(mergeFilesPath);
+                                callback && callback();
                             }
                         });
                     } else {
@@ -68,7 +69,7 @@ var cssMerge = (function() {
                 });
                 if (mergeWalking == 0) {
                     doMerge(mergeFilesPath, buildPath + (config.outputFile? config.outputFile : '/merge.css'));
-                    callback && callback(mergeFilesPath);
+                    callback && callback();
                 }
             })(mergeConfig);
         });

@@ -26,8 +26,7 @@ imagesHandler.unpackImages = function(rootPath, buildPath, imagesConfig) {
     }
 
     var compression = function() {
-        imagesCompression.walkForPaths(rootPath, buildPath, imagesConfig, paths, function(compressionPaths) {
-            paths.compression = compressionPaths;
+        imagesCompression.walkForPaths(rootPath, buildPath, imagesConfig, paths, function() {
             (nextStep())();
         });
     }
